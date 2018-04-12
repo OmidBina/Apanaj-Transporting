@@ -11,7 +11,7 @@ client.start()
 a = []
 for msg in client.get_message_history("zeitgeistsystem", limit=1):
     try:
-        print(msg)
+        print(msg.id)
         #print(client.download_media(msg, file="./files/"+str(msg.media.document.id), progress_callback=None))
     except:
         pass
