@@ -8,6 +8,7 @@ __pycache__/
 .DS_Store
 user_data/
 .idea/
+session_name.session
 # Distribution / packaging
 .Python
 build/
