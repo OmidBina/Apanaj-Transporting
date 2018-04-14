@@ -11,7 +11,7 @@ client = TelegramClient('session_name', api_id, api_hash)
 client.start()
 COUNTER = 0
 FILESIZE = 5000
-channel_id = "iustfuckers"
+
 def do_job(entity_id, limit, msg, video, image, music):
 
     a = []
@@ -95,7 +95,7 @@ def handle_messages(message, image, video, music):
     COUNTER += 1
     print("%d: Message id: %d Saved." % (COUNTER, message.id))
 
-do_job("zeitgeistsystem", 10, True, True, True, True)
+do_job("khamenei_reyhaneh", 2821, True, True, True, True)
 
 
 #msg = Message.get(Message.message_id == 51768)
