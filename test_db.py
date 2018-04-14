@@ -1,4 +1,4 @@
-from db import Message
+from db.db import Message
 
 
 

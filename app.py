@@ -1,9 +1,13 @@
 from telethon import TelegramClient
 #from filter import Filter
-from db import Message
+
+from db.db import create_model
 from telethon.tl.types import MessageMediaPhoto
 from telethon.tl.types import MessageMediaDocument
+from telethon.tl.types import MessageService
 import fire
+
+Message = None
 
 api_id = 99515
 api_hash = '0bbe352c1e6d93ddccbcd0445a7dde64'
@@ -11,7 +15,7 @@ api_hash = '0bbe352c1e6d93ddccbcd0445a7dde64'
 client = TelegramClient('session_name', api_id, api_hash)
 client.start()
 COUNTER = 0
-FILE_SIZE = 5000
+FILE_SIZE = 9000000000
 ENTITY_NAME = None
 USER_DATA_PATH = None
 
@@ -19,8 +23,9 @@ USER_DATA_PATH = None
 def do_job(entity_id, limit, text, video, image, music):
 
     reverse_messages = []
-    for msg in client.get_message_history(entity_id, limit=limit):
-        reverse_messages.append(msg)
+    for msg in client.get_messages(entity_id, limit=limit):
+        if type(msg) != MessageService:
+            reverse_messages.append(msg)
 
     reverse_messages.reverse()
 
@@ -69,7 +74,7 @@ def save_to_db(message, text, image, video, music):
         print("Message with %s is Already Saved." % (message.id))
     else:
         if video:
-            if message.media.document.size < 5242880:
+            if message.media.document.size < FILE_SIZE:
                 file_name = client.download_media(message, file=USER_DATA_PATH+str(message.id), progress_callback=None)
                 Message.create(message_id=message.id, message_text=message.message, message_type="video", file_size=message.media.document.size, file_name=file_name)
 
@@ -112,11 +117,14 @@ def handle_messages(message, text, image, video, music):
 
 class App(object):
 
-  def save_to_db(self, from_entity, limit):
+  def save(self, from_entity, limit):
       ENTITY_NAME = from_entity
       global  USER_DATA_PATH
-      USER_DATA_PATH = "./" + from_entity + "/files/"
-      do_job(from_entity, limit, True, True, True, True)
+      USER_DATA_PATH = "./user_data/" + from_entity + "/files/"
+      global Message
+      Message = create_model("./user_data/" + from_entity + "/", from_entity)
+      entity = client.get_entity(from_entity)
+      do_job(entity, limit, True, True, True, True)
 
 
 if __name__ == '__main__':

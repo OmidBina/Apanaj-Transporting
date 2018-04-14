@@ -1,18 +1,21 @@
 import pyautogui as pg
-from db import Message
+import sys
+
+sys.path.append('../db/')
+from db import create_model
 import os
 from time import sleep
 import pyperclip
-
+Message = create_model("../user_data/zeitgeistsystem/", "messages")
 SMALL_DELAY = 0.75
 MEDIUM_DELAY = 1
-file_pathhh = "C:\\Users\\apanazh\\Desktop\\Post\\files\\"
+file_pathhh = "C:\\Users\\Apanaj\\Desktop\\transporting\\user_data\\zeitgeistsystem\\files\\"
 
 def post_image(file_name, message_text):
     pg.click(940, 708)
     sleep(MEDIUM_DELAY)
 
-    pg.typewrite(file_pathhh + file_name[8:])
+    pg.typewrite(file_pathhh + file_name[24:])
     sleep(SMALL_DELAY)
     pg.click(513, 439)
     sleep(SMALL_DELAY)
@@ -37,7 +40,7 @@ def post_video(message):
     # rename_file(file_name[8:])
     pg.click(940, 708)
     sleep(MEDIUM_DELAY)
-    pg.typewrite(file_pathhh + message.file_name[8:])
+    pg.typewrite(file_pathhh + message.file_name[24:])
     sleep(SMALL_DELAY)
     pg.click(513, 439)
     sleep(SMALL_DELAY)
@@ -66,11 +69,11 @@ for message in Message.select().where(Message.posted == False):
         post_video(message)
     if message.message_type == "image":
         # Photo
-        post_image(message.file_name, message.message_text)
+        post_image(message.file_name, message.modified_text)
 
     if message.message_type == "text":
-        post_text(message.message_text)
+        post_text(message.modified_text)
 
     message.posted = True
     message.save()
-    #sleep(2)
+    sleep(1)

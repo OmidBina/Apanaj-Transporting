@@ -7,8 +7,8 @@ class Filter:
     def filter_message(message_text):
         mentions = re.findall("(@[A-Za-z0-9_]+)", message_text)
         clean_text = message_text
-        for mention in mentions:
-            clean_text = clean_text.replace(mention, "")
+        #for mention in mentions:
+            #clean_text = clean_text.replace(mention, "")
         urls = re.findall('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\), ]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', message_text)
         for url in urls:
             parsed = urlparse(url)

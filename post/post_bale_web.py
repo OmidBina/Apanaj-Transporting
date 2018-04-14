@@ -1,5 +1,5 @@
 import pyautogui as pg
-from db import Message
+from db.db import Message
 import os
 from time import sleep
 import pyperclip
