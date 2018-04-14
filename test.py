@@ -8,7 +8,7 @@ api_hash = '0bbe352c1e6d93ddccbcd0445a7dde64'
 
 client = TelegramClient('session_name', api_id, api_hash)
 client.start()
-channel = client.get_entity('https://t.me/joinchat/AAAAAD6N4PVREVsXoHiLOw')
+channel = client.get_entity('tabsir_afn')
 for message in client.get_messages(channel, limit=1):
    print(message.id)
     #print(type(message.media) == MessageMediaPhoto)

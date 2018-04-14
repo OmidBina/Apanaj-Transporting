@@ -1,6 +1,6 @@
 from telethon import TelegramClient
 #from filter import Filter
-
+from tqdm import tqdm
 from db.db import create_model
 from telethon.tl.types import MessageMediaPhoto
 from telethon.tl.types import MessageMediaDocument
@@ -66,7 +66,8 @@ def do_job(entity_id, limit, text, video, image, music):
                     handle_messages(message, False, False, False, True)
 
 
-
+def show_download_process(recv, totlal):
+    print(recv)
 
 
 def save_to_db(message, text, image, video, music):
@@ -75,11 +76,11 @@ def save_to_db(message, text, image, video, music):
     else:
         if video:
             if message.media.document.size < FILE_SIZE:
-                file_name = client.download_media(message, file=USER_DATA_PATH+str(message.id), progress_callback=None)
+                file_name = client.download_media(message, file=USER_DATA_PATH+str(message.id), progress_callback=show_download_process)
                 Message.create(message_id=message.id, message_text=message.message, message_type="video", file_size=message.media.document.size, file_name=file_name)
 
         if image:
-            file_name = client.download_media(message, file=USER_DATA_PATH+str(message.id), progress_callback=None)
+            file_name = client.download_media(message, file=USER_DATA_PATH+str(message.id), progress_callback=show_download_process)
             Message.create(message_id=message.id, message_text=message.message, message_type="image", file_size=None, file_name=file_name)
 
         if music:
@@ -88,9 +89,9 @@ def save_to_db(message, text, image, video, music):
 
         if text:
             Message.create(message_id=message.id, message_text=message.message, message_type="text", file_size=None, file_name=None)
-    global COUNTER
-    COUNTER += 1
-    print("%d: Message id: %d Saved." % (COUNTER, message.id))
+        global COUNTER
+        COUNTER += 1
+        print("%d: Message id: %d Saved." % (COUNTER, message.id))
 
 
 def to_new_channel(channel_id, text, message, image, video, music):
