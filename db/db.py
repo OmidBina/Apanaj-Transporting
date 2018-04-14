@@ -1,9 +1,9 @@
 from peewee import *
-
+from playhouse.sqliteq import SqliteQueueDatabase
 
 
 def create_model(file_path, file_name):
-    db = SqliteDatabase(file_path + file_name + '.db')
+    db = SqliteQueueDatabase(file_path + file_name + '.db')
 
     class BaseModel(Model):
         class Meta:
@@ -22,5 +22,3 @@ def create_model(file_path, file_name):
     db.create_tables([Message])
 
     return Message
-
-

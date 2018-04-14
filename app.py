@@ -66,9 +66,6 @@ def do_job(entity_id, limit, text, video, image, music):
                     handle_messages(message, False, False, False, True)
 
 
-def show_download_process(recv, totlal):
-    print(recv)
-
 
 def save_to_db(message, text, image, video, music):
     if Message.select().where(Message.message_id == message.id):
@@ -112,6 +109,12 @@ def to_new_channel(channel_id, text, message, image, video, music):
 def handle_messages(message, text, image, video, music):
     save_to_db(message, text, image, video, music)
     #to_new_channel("iusthotornotbot", text, message, image, video, music)
+
+def show_download_process(recv, total):
+    print(recv, total)
+    pbar = tqdm(total=total)
+    pbar.update(recv)
+    pbar.close()
 
 
 
