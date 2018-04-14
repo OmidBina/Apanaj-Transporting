@@ -19,6 +19,7 @@ FILE_SIZE = 9000000000
 ENTITY_NAME = None
 USER_DATA_PATH = None
 
+pbar = tqdm(total=100)
 
 def do_job(entity_id, limit, text, video, image, music):
 
@@ -41,13 +42,13 @@ def do_job(entity_id, limit, text, video, image, music):
 
         if video:
             if type(message.media) == MessageMediaDocument:
-                if message.media.document.mime_type == "video/mp4":
+               # if message.media.document.mime_type == "video/mp4":
                     #client.send_message(channel_id, message=message.message, reply_to=None, parse_mode='md', link_preview=True, file=message.media, force_document=False)
                     #file_name = client.download_media(message, file="./files/"+str(message.media.document.id), progress_callback=None)
                     #file_name = "aa"
                     #msg, created = Message.get_or_create(message_id=message.id, message_text=str(message.message), file_size=message.media.document.size, file_name=file_name)
                     #if message.media.size < FILESIZE:
-                    handle_messages(message, False, False, True, False)
+                handle_messages(message, False, False, True, False)
 
 
         if image:
@@ -57,26 +58,31 @@ def do_job(entity_id, limit, text, video, image, music):
                 #client.send_message(channel_id, message=message.message, reply_to=None, parse_mode='md', link_preview=True, file=message.media, force_document=False)
                 handle_messages(message, False, True, False, False)
 
-        if music:
+        '''if music:
             if type(message.media) == MessageMediaDocument:
                 if message.media.document.mime_type == 'audio/mp3' or message.media.document.mime_type == 'audio/mpeg' or message.media.document.mime_type =='audio/mp4':
                     #file_name = client.download_media(message, file="./files/"+str(message.media.photo.id), progress_callback=None)
                     #msg, created = Message.get_or_create(message_id=message.id, message_text=message.message, file_name=file_name)
                     #client.send_message(channel_id, message=message.message, reply_to=None, parse_mode='md', link_preview=True, file=message.media, force_document=False)
-                    handle_messages(message, False, False, False, True)
+                    handle_messages(message, False, False, False, True)'''
 
 
 
 def save_to_db(message, text, image, video, music):
+    global pbar
     if Message.select().where(Message.message_id == message.id):
         print("Message with %s is Already Saved." % (message.id))
     else:
         if video:
             if message.media.document.size < FILE_SIZE:
+
+                pbar = tqdm(total=message.media.document.size)
                 file_name = client.download_media(message, file=USER_DATA_PATH+str(message.id), progress_callback=show_download_process)
                 Message.create(message_id=message.id, message_text=message.message, message_type="video", file_size=message.media.document.size, file_name=file_name)
 
         if image:
+
+            pbar = tqdm(total=message.media.document.size)
             file_name = client.download_media(message, file=USER_DATA_PATH+str(message.id), progress_callback=show_download_process)
             Message.create(message_id=message.id, message_text=message.message, message_type="image", file_size=None, file_name=file_name)
 
@@ -111,8 +117,8 @@ def handle_messages(message, text, image, video, music):
     #to_new_channel("iusthotornotbot", text, message, image, video, music)
 
 def show_download_process(recv, total):
-    print(recv, total)
-    pbar = tqdm(total=total)
+    global pbar
+
     pbar.update(recv)
     pbar.close()
 

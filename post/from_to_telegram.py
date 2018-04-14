@@ -11,7 +11,8 @@ client.start()
 def from_to_telegram(from_entity, to_entity, limit):
     reverse_messages = []
     for msg in client.get_messages(from_entity, limit=limit):
-        reverse_messages.append(msg)
+        if msg.id > 570:
+            reverse_messages.append(msg)
 
 
     reverse_messages.reverse()
@@ -38,4 +39,4 @@ def from_to_telegram(from_entity, to_entity, limit):
 
 channel = client.get_entity('https://t.me/joinchat/AAAAAD6N4PVREVsXoHiLOw')
 #print(channel)
-from_to_telegram(channel, "iusthotornotbot", None)
+from_to_telegram(channel, "shams_test1", None)
