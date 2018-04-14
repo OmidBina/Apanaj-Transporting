@@ -13,5 +13,5 @@ def from_to_telegram(from_entity, to_entity, limit):
         client.send_message(to_entity, message=message.message, reply_to=None, parse_mode='md',
                             link_preview=True,
                             file=message.media, force_document=False)
-        
+
         print("Message id: %s Forwarded." % (message.id))

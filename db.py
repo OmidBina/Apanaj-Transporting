@@ -10,6 +10,7 @@ class BaseModel(Model):
 
 
 class Message(BaseModel):
+
     message_id = IntegerField()
     message_text = TextField()
     modified_text = TextField(null=True)
@@ -18,16 +19,6 @@ class Message(BaseModel):
     file_name = CharField(null=True)
     file_size = IntegerField(null=True)
 
-
-class ImageMessage(BaseModel):
-    file_name = CharField()
-    message_text = TextField()
-
-
-class VideoMessgae(BaseModel):
-    file_name = CharField()
-    file_size = IntegerField()
-    message_text = TextField(null=True)
 
 
 db.connect()

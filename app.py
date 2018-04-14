@@ -1,8 +1,9 @@
 from telethon import TelegramClient
-from filter import Filter
+#from filter import Filter
 from db import Message
 from telethon.tl.types import MessageMediaPhoto
 from telethon.tl.types import MessageMediaDocument
+import fire
 
 api_id = 99515
 api_hash = '0bbe352c1e6d93ddccbcd0445a7dde64'
@@ -10,7 +11,9 @@ api_hash = '0bbe352c1e6d93ddccbcd0445a7dde64'
 client = TelegramClient('session_name', api_id, api_hash)
 client.start()
 COUNTER = 0
-FILESIZE = 5000
+FILE_SIZE = 5000
+ENTITY_NAME = None
+USER_DATA_PATH = None
 
 
 def do_job(entity_id, limit, text, video, image, music):
@@ -67,15 +70,15 @@ def save_to_db(message, text, image, video, music):
     else:
         if video:
             if message.media.document.size < 5242880:
-                file_name = client.download_media(message, file="./files/"+str(message.id), progress_callback=None)
+                file_name = client.download_media(message, file=USER_DATA_PATH+str(message.id), progress_callback=None)
                 Message.create(message_id=message.id, message_text=message.message, message_type="video", file_size=message.media.document.size, file_name=file_name)
 
         if image:
-            file_name = client.download_media(message, file="./files/"+str(message.id), progress_callback=None)
+            file_name = client.download_media(message, file=USER_DATA_PATH+str(message.id), progress_callback=None)
             Message.create(message_id=message.id, message_text=message.message, message_type="image", file_size=None, file_name=file_name)
 
         if music:
-            file_name = client.download_media(message, file="./files/"+str(message.id), progress_callback=None)
+            file_name = client.download_media(message, file=USER_DATA_PATH+str(message.id), progress_callback=None)
             Message.create(message_id=message.id, message_text=message.message, message_type="msuic", file_size=message.media.document.size, file_name=file_name)
 
         if text:
@@ -106,7 +109,15 @@ def handle_messages(message, text, image, video, music):
 
 
 
-do_job("zeitgeistsystem", 10, True, True, True, True)
+
+class App(object):
+
+  def save_to_db(self, from_entity, limit):
+      ENTITY_NAME = from_entity
+      global  USER_DATA_PATH
+      USER_DATA_PATH = "./" + from_entity + "/files/"
+      do_job(from_entity, limit, True, True, True, True)
 
 
-
+if __name__ == '__main__':
+  fire.Fire(App)
