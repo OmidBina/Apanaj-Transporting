@@ -1,8 +1,7 @@
 from peewee import *
 
 
-db = SqliteDatabase('messages.db')
-
+db = None
 
 class BaseModel(Model):
     class Meta:
@@ -21,6 +20,10 @@ class Message(BaseModel):
 
 
 
-db.connect()
 
-db.create_tables([Message])
+
+def run():
+    global db
+    db = SqliteDatabase('messages.db')
+    db.connect()
+    db.create_tables([Message])
