@@ -34,5 +34,5 @@ text = '''
 0912 8397780
 021 22258193. Shams
 '''
-print(Filter.filter_message(text))
+
 
